@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Dataset
+data/raw/
+data/processed/
+
+# Trained models
+models/*.pth
+models/*.pt
+
+# Uploaded videos
+uploads/*
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
