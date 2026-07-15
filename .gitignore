@@ -10,9 +10,7 @@ data/raw/
 data/processed/
 
 # Trained models
-models/*.pth
-models/*.pt
-
+models/
 # Uploaded videos
 uploads/*
 
