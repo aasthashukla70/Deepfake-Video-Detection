@@ -23,3 +23,7 @@ uploads/*
 # VS Code
 .vscode/
 data/faces/
+static/uploads/
+data/temp_frames/
+data/temp_faces/
+data/test/
