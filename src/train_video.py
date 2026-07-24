@@ -3,58 +3,33 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from dataloader import train_loader, val_loader
-from model import DeepFakeCNN
-
-
-# =========================
-# Configuration
-# =========================
+from video_dataloader import train_loader, val_loader
+from video_model import CNNLSTM
 
 NUM_EPOCHS = 10
-LEARNING_RATE = 0.001
-MODEL_PATH = "models/resnet18_padding_best.pth"
+LEARNING_RATE = 0.0001
+
+MODEL_PATH = "models/cnn_lstm_frozen_best.pth"
 
 os.makedirs("models", exist_ok=True)
 
-
-# =========================
-# Device
-# =========================
-
 device = torch.device(
-    "cuda" if torch.cuda.is_available() else "cpu"
+    "cuda" if torch.cuda.is_available()
+    else "cpu"
 )
 
-print(f"Using device: {device}")
+print("Using device:", device)
 
+model = CNNLSTM().to(device)
 
-# =========================
-# Model Setup
-# =========================
-
-model = DeepFakeCNN().to(device)
-class_weights = torch.tensor(
-    [1.0, 1.5]
-).to(device)
-
-criterion = nn.CrossEntropyLoss(
-    weight=class_weights
-)
+criterion = nn.CrossEntropyLoss()
 
 optimizer = optim.Adam(
     model.parameters(),
-    lr=LEARNING_RATE,
-    weight_decay=0
+    lr=LEARNING_RATE
 )
 
-print("Model, loss function and optimizer initialized successfully.")
-
-
-
-# =========================
-# Training
-# =========================
+print("Model initialized")
 
 def train_one_epoch():
 
@@ -65,16 +40,16 @@ def train_one_epoch():
     total = 0
 
 
-    for images, labels, _ in train_loader:
+    for videos, labels in train_loader:
 
-        images = images.to(device)
+        videos = videos.to(device)
         labels = labels.to(device)
 
 
         optimizer.zero_grad()
 
 
-        outputs = model(images)
+        outputs = model(videos)
 
 
         loss = criterion(outputs, labels)
@@ -104,13 +79,6 @@ def train_one_epoch():
 
     return loss, accuracy
 
-
-
-
-# =========================
-# Validation
-# =========================
-
 def validate():
 
     model.eval()
@@ -122,13 +90,13 @@ def validate():
 
     with torch.no_grad():
 
-        for images, labels, _ in val_loader:
+        for videos, labels in val_loader:
 
-            images = images.to(device)
+            videos = videos.to(device)
             labels = labels.to(device)
 
 
-            outputs = model(images)
+            outputs = model(videos)
 
 
             loss = criterion(outputs, labels)
@@ -152,15 +120,7 @@ def validate():
 
     return loss, accuracy
 
-
-
-
-# =========================
-# Main Training Loop
-# =========================
-
 if __name__ == "__main__":
-
 
     best_accuracy = 0
 
@@ -177,12 +137,11 @@ if __name__ == "__main__":
         val_loss, val_acc = validate()
 
 
+        print(f"Train Loss     : {train_loss:.4f}")
+        print(f"Train Accuracy : {train_acc:.2f}%")
 
-        print(f"Train Loss      : {train_loss:.4f}")
-        print(f"Train Accuracy  : {train_acc:.2f}%")
-
-        print(f"Val Loss        : {val_loss:.4f}")
-        print(f"Val Accuracy    : {val_acc:.2f}%")
+        print(f"Val Loss       : {val_loss:.4f}")
+        print(f"Val Accuracy   : {val_acc:.2f}%")
 
 
 

@@ -1,14 +1,20 @@
 from pathlib import Path
-
+from torchvision import transforms
 from PIL import Image
 from torch.utils.data import Dataset
+import torch
 
 
-class FaceDataset(Dataset):
+class VideoDataset(Dataset):
 
     def __init__(self, split_file, transform=None):
 
         self.transform = transform
+        if self.transform is None:
+            self.transform = transforms.Compose([
+                transforms.Resize((224,224)),
+                transforms.ToTensor()
+            ])
         self.samples = []
 
 
@@ -34,29 +40,34 @@ class FaceDataset(Dataset):
 
         for video in video_list:
 
-            image_folder = dataset_path / video
+            video_folder = dataset_path / video
 
 
             if "original" in video:
                 label = 0
-
             else:
                 label = 1
 
 
-            for image_path in sorted(image_folder.glob("*.jpg")):
+            frames = sorted(
+                video_folder.glob("*.jpg")
+            )
+
+
+            if len(frames) == 60:
 
                 self.samples.append(
                     (
-                        image_path,
+                        frames,
                         label
                     )
                 )
 
 
         print(
-            f"Loaded {len(self.samples)} images from {split_file}"
+            f"Loaded {len(self.samples)} videos from {split_file}"
         )
+
 
 
     def __len__(self):
@@ -67,26 +78,35 @@ class FaceDataset(Dataset):
 
     def __getitem__(self, index):
 
-        image_path, label = self.samples[index]
+        frame_paths, label = self.samples[index]
 
 
-        image = Image.open(
-            image_path
-        ).convert("RGB")
+        frames = []
 
 
-        if self.transform:
+        for frame_path in frame_paths:
 
-            image = self.transform(image)
+            image = Image.open(
+                frame_path
+            ).convert("RGB")
 
 
-        return image, label, str(image_path)
+            if self.transform:
+                image = self.transform(image)
+            frames.append(image)
+
+
+        frames = torch.stack(frames)
+
+
+        return frames, label
 
 
 
 if __name__ == "__main__":
 
-    dataset = FaceDataset(
+
+    dataset = VideoDataset(
         "train.txt"
     )
 
@@ -97,17 +117,12 @@ if __name__ == "__main__":
     )
 
 
-    image, label, path = dataset[0]
+    frames, label = dataset[0]
 
 
     print(
-        "Image size:",
-        image.size
-    )
-
-    print(
-        "Path:",
-        path
+        "Frames shape:",
+        frames.shape
     )
 
     print(

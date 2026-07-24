@@ -1,83 +1,276 @@
 import torch
+import numpy as np
+
+from sklearn.metrics import (
+    confusion_matrix,
+    precision_score,
+    recall_score,
+    f1_score
+)
 
 from dataloader import val_loader
 from model import DeepFakeCNN
 
+
+
+# =========================
+# Configuration
+# =========================
+
+MODEL_PATH = "models/experiments/resnet18_frozen_baseline.pth"
+
+
+# =========================
+# Device
+# =========================
+
 device = torch.device(
-    "cuda" if torch.cuda.is_available() else "cpu"
+    "cuda" if torch.cuda.is_available()
+    else "cpu"
 )
 
-model = DeepFakeCNN().to(device)
+
+
+# =========================
+# Load Model
+# =========================
+
+model = DeepFakeCNN(use_dropout=False).to(device)
+
 
 model.load_state_dict(
-    torch.load("models/resnet18_best.pth", map_location=device)
+    torch.load(
+        MODEL_PATH,
+        map_location=device
+    )
 )
 
+
 model.eval()
+
 
 print("Model loaded successfully.")
 
 
+
+# =========================
+# Evaluation
+# =========================
+
 def evaluate():
 
-    TP = TN = FP = FN = 0
+    y_true = []
+    y_pred = []
+
+    wrong_predictions = []
+
+    video_results = {}
+
 
     with torch.no_grad():
 
-        for images, labels in val_loader:
+        for images, labels, paths in val_loader:
+
 
             images = images.to(device)
             labels = labels.to(device)
 
+
             outputs = model(images)
 
-            _, predictions = torch.max(outputs, 1)
 
-            for actual, predicted in zip(labels, predictions):
+            probabilities = torch.softmax(
+                outputs,
+                dim=1
+            )
 
-                actual = actual.item()
-                predicted = predicted.item()
 
-                # 0 = Original
-                # 1 = Deepfake
+            confidence, predicted = torch.max(
+                probabilities,
+                1
+            )
 
-                if actual == 0 and predicted == 0:
-                    TN += 1
 
-                elif actual == 1 and predicted == 1:
-                    TP += 1
+            for i in range(len(labels)):
 
-                elif actual == 0 and predicted == 1:
-                    FP += 1
 
-                elif actual == 1 and predicted == 0:
-                    FN += 1
+                true_label = labels[i].item()
 
-    total = TP + TN + FP + FN
+                pred_label = predicted[i].item()
 
-    accuracy = (TP + TN) / total
+                conf = confidence[i].item()
 
-    precision = TP / (TP + FP) if (TP + FP) != 0 else 0
 
-    recall = TP / (TP + FN) if (TP + FN) != 0 else 0
+                path = paths[i]
 
-    f1 = (
-        2 * precision * recall / (precision + recall)
-        if (precision + recall) != 0
-        else 0
+
+                y_true.append(true_label)
+
+                y_pred.append(pred_label)
+
+
+
+                # Store wrong predictions
+
+                if true_label != pred_label:
+
+                    wrong_predictions.append(
+                        (
+                            path,
+                            true_label,
+                            pred_label,
+                            conf
+                        )
+                    )
+
+
+
+                # Video level analysis
+
+                parts = path.split("\\")
+
+                video_name = parts[-2]
+
+
+                if video_name not in video_results:
+
+                    video_results[video_name] = {
+                        "correct":0,
+                        "total":0
+                    }
+
+
+                video_results[video_name]["total"] += 1
+
+
+                if true_label == pred_label:
+
+                    video_results[video_name]["correct"] += 1
+
+
+
+    # =========================
+    # Metrics
+    # =========================
+
+    accuracy = (
+        np.mean(
+            np.array(y_true)
+            ==
+            np.array(y_pred)
+        )
+        * 100
     )
 
-    print(f"\nAccuracy : {accuracy * 100:.2f}%")
+
+    cm = confusion_matrix(
+        y_true,
+        y_pred
+    )
+
+
+    precision = precision_score(
+        y_true,
+        y_pred
+    )
+
+
+    recall = recall_score(
+        y_true,
+        y_pred
+    )
+
+
+    f1 = f1_score(
+        y_true,
+        y_pred
+    )
+
+
+
+    print("\nAccuracy : {:.2f}%".format(
+        accuracy
+    ))
+
 
     print("\nConfusion Matrix")
-    print(f"[[{TN} {FP}]")
-    print(f" [{FN} {TP}]]")
+
+    print(cm)
+
+
 
     print("\nMetrics")
-    print(f"Precision : {precision:.4f}")
-    print(f"Recall    : {recall:.4f}")
-    print(f"F1-Score  : {f1:.4f}")
+
+    print(
+        "Precision : {:.4f}".format(
+            precision
+        )
+    )
+
+    print(
+        "Recall    : {:.4f}".format(
+            recall
+        )
+    )
+
+    print(
+        "F1-Score  : {:.4f}".format(
+            f1
+        )
+    )
+
+
+
+    # =========================
+    # Video Performance
+    # =========================
+
+    print("\nVideo Performance")
+    print("-------------------------")
+
+
+    for video, result in video_results.items():
+
+        score = (
+            result["correct"]
+            /
+            result["total"]
+        ) * 100
+
+
+        print(
+            f"{video:<15} "
+            f"{result['correct']}/{result['total']} "
+            f"({score:.2f}%)"
+        )
+
+
+
+    # =========================
+    # Wrong Predictions
+    # =========================
+
+    print("\nWrong Predictions:")
+
+
+    for item in wrong_predictions[:20]:
+
+        path, true, pred, conf = item
+
+
+        print(
+            f"\nPath: {path}"
+        )
+
+        print(
+            f"True: {true} | "
+            f"Predicted: {pred} | "
+            f"Confidence: {conf*100:.2f}%"
+        )
+
+
 
 
 if __name__ == "__main__":
+
     evaluate()

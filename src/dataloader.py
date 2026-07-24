@@ -40,23 +40,27 @@ val_dataset = FaceDataset(
 
 train_loader = DataLoader(
     train_dataset,
-    batch_size=32,
+    batch_size=4,
     shuffle=True,
     num_workers=0
 )
 
 val_loader = DataLoader(
     val_dataset,
-    batch_size=32,
+    batch_size=4,
     shuffle=False,
     num_workers=0
 )
 
 if __name__ == "__main__":
+
     print(f"Training images: {len(train_dataset)}")
     print(f"Validation images: {len(val_dataset)}")
 
-    images, labels = next(iter(train_loader))
 
-    print(f"Batch shape: {images.shape}")
-    print(f"Labels shape: {labels.shape}")
+    images, labels, paths = next(iter(train_loader))
+
+
+    print("Image batch shape:", images.shape)
+    print("Labels shape:", labels.shape)
+    print("First path:", paths[0])
