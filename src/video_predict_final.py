@@ -11,7 +11,7 @@ from src.model import DeepFakeCNN
 # Configuration
 # ==========================
 
-MODEL_PATH = "models/resnet18_final.pth"
+MODEL_PATH = "models/resnet18_finetuned.pth"
 
 NUM_FRAMES = 60
 

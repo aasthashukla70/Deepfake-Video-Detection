@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 
 UPLOAD_FOLDER = "static/uploads"
+DEMO_FOLDER = "static/demo_videos"
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -48,7 +49,6 @@ def predict():
     video.save(save_path)
 
 
-
     prediction, confidence = predict_video(
         save_path
     )
@@ -57,8 +57,38 @@ def predict():
     return render_template(
         "result.html",
         prediction=prediction,
-        confidence=f"{confidence:.2f}"
+        confidence=f"{confidence:.2f}",
+        source="Uploaded Video",
+        filename=video.filename,
+        video_path="/static/uploads/" + video.filename
     )
+
+
+
+
+@app.route("/demo/<filename>")
+def demo_predict(filename):
+
+    video_path = os.path.join(
+        DEMO_FOLDER,
+        filename
+    )
+
+
+    prediction, confidence = predict_video(
+        video_path
+    )
+
+
+    return render_template(
+        "result.html",
+        prediction=prediction,
+        confidence=f"{confidence:.2f}",
+        source="Demo Video",
+        filename=filename,
+        video_path="/static/demo_videos/" + filename
+    )
+
 
 
 

@@ -11,9 +11,9 @@ from model import DeepFakeCNN
 # Configuration
 # =========================
 
-NUM_EPOCHS = 10
-LEARNING_RATE = 0.001
-MODEL_PATH = "models/resnet18_padding_best.pth"
+NUM_EPOCHS = 15
+LEARNING_RATE = 0.0001
+MODEL_PATH = "models/resnet18_finetuned.pth"
 
 os.makedirs("models", exist_ok=True)
 
@@ -34,18 +34,12 @@ print(f"Using device: {device}")
 # =========================
 
 model = DeepFakeCNN().to(device)
-class_weights = torch.tensor(
-    [1.0, 1.5]
-).to(device)
-
-criterion = nn.CrossEntropyLoss(
-    weight=class_weights
-)
+criterion = nn.CrossEntropyLoss()
 
 optimizer = optim.Adam(
-    model.parameters(),
+    filter(lambda p: p.requires_grad, model.parameters()),
     lr=LEARNING_RATE,
-    weight_decay=0
+    weight_decay=1e-4
 )
 
 print("Model, loss function and optimizer initialized successfully.")

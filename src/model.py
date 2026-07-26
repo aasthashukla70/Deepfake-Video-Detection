@@ -15,6 +15,10 @@ class DeepFakeCNN(nn.Module):
 
         for param in self.model.parameters():
             param.requires_grad = False
+        for param in self.model.layer4.parameters():
+            param.requires_grad = True
+        for param in self.model.fc.parameters():
+            param.requires_grad = True
 
 
         in_features = self.model.fc.in_features

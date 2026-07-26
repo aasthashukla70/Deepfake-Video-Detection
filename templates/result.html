@@ -3,56 +3,215 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Prediction Result</title>
+<title>DeepTrace AI Result</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
 
 <body>
 
-    <div class="container">
 
-        <h1>Detection Result</h1>
-
-
-        <h2>
-    Prediction:
-</h2>
-
-<div class="prediction-box {{ prediction }}">
-    {{ prediction }}
-</div>
+<div class="container result-container">
 
 
-        <h3>
-    Confidence: {{ confidence }}%
-</h3>
+    <h1>Detection Result</h1>
 
-<div class="confidence-container">
+    <p class="subtitle">
+        AI-powered forensic analysis completed
+    </p>
 
-    <div 
-        class="confidence-bar"
-        style="width: {{ confidence | default(0) }}%;"
-    >
+
+
+
+    <div class="result-grid">
+
+
+
+        <!-- Classification Card -->
+
+        <div class="result-card">
+
+
+            <h2>🔍 Classification</h2>
+
+
+            <div class="prediction-box {{ prediction }}">
+                {{ prediction }}
+            </div>
+
+
+
+            <h3>📊 Confidence</h3>
+
+            <h2>{{ confidence }}%</h2>
+
+
+
+            <div class="confidence-container">
+
+                <div 
+                    class="confidence-bar"
+                    style="width: {{ confidence }}%;">
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- Video Evidence Card -->
+
+<div class="result-card video-card">
+
+
+    <h2>🎥 Video Evidence</h2>
+
+
+    <div class="video-layout">
+
+
+        <div class="video-section">
+
+
+            <video 
+                class="result-video"
+                controls
+                autoplay
+                >
+
+
+                <source 
+                    src="{{ video_path }}" 
+                    type="video/mp4">
+
+
+                Your browser does not support video playback.
+
+
+            </video>
+
+
+        </div>
+
+
+
+        <div class="video-info">
+
+
+            <p>
+                <b>File:</b> {{ filename }}
+            </p>
+
+
+            <p>
+                <b>Source:</b> {{ source }}
+            </p>
+
+
+            <p>
+                <b>Frames analyzed:</b> 60
+            </p>
+
+
+            <p>
+                <b>Model:</b> ResNet18 Transfer Learning
+            </p>
+
+
+        </div>
+
+
     </div>
 
+
 </div>
 
+    </div>
 
-        <br>
 
 
-        <a href="/">
-            Analyze Another Video
-        </a>
+
+
+
+
+    <!-- Pipeline Section -->
+
+
+    <div class="pipeline-card">
+
+
+        <h2>⚙ AI Processing Pipeline</h2>
+
+
+
+        <div class="pipeline-grid">
+
+
+
+            <div>
+
+                <b>Frame Extraction</b>
+
+                <p>
+                    Video frames sampled for analysis
+                </p>
+
+            </div>
+
+
+
+
+            <div>
+
+                <b>Face Detection</b>
+
+                <p>
+                    Facial regions extracted using OpenCV
+                </p>
+
+            </div>
+
+
+
+
+
+            <div>
+
+                <b>AI Classification</b>
+
+                <p>
+                    ResNet18 analyzes manipulation patterns
+                </p>
+
+            </div>
+
+
+
+        </div>
+
 
 
     </div>
+
+
+
+
+
+
+    <a href="/" class="back-button">
+        Analyze Another Video
+    </a>
+
+
+
+
+</div>
+
 
 
 </body>

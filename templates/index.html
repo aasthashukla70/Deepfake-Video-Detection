@@ -3,46 +3,222 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Deepfake Detection</title>
+<title>DeepTrace AI</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
 
 <body>
 
-    <div class="container">
 
-        <h1>Deepfake Detection System</h1>
-
-        <p>
-            Upload a face image to check whether it is Original or Deepfake.
-        </p>
+<div class="container">
 
 
-       
-        <form action="/predict" method="POST" enctype="multipart/form-data">
+<div class="hero">
 
-    <input 
-        type="file" 
-        name="video"
-        accept="video/*"
-        required
-    >
+<h1>
+DeepTrace AI
+</h1>
 
-    <br><br>
+<h2>
+AI-powered Deepfake Detection System
+</h2>
 
-    <button type="submit">
-        Analyze Video
-    </button>
+
+<p>
+Analyze suspicious videos using face detection and deep learning.
+</p>
+
+</div>
+
+
+
+
+<div class="home-grid">
+
+
+
+<!-- Upload Section -->
+
+<div class="feature-card upload-card">
+
+
+<h3>
+📂 Upload Video Evidence
+</h3>
+
+
+<p>
+Upload a suspicious video and let our AI pipeline analyze facial manipulation patterns.
+</p>
+
+
+<div class="upload-info">
+
+<p>
+Supported formats:
+<br>
+<b>MP4 | AVI | MOV</b>
+</p>
+
+
+<p>
+AI Pipeline:
+<br>
+✓ Frame Extraction
+<br>
+✓ Face Detection
+<br>
+✓ ResNet18 Classification
+</p>
+
+
+</div>
+
+
+
+
+<form action="/predict" method="POST" enctype="multipart/form-data">
+
+
+<input 
+type="file"
+name="video"
+accept="video/*"
+required
+>
+
+
+<button type="submit">
+Analyze Video
+</button>
+
 
 </form>
 
-    </div>
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Demo Section -->
+
+
+<div class="feature-card demo-card">
+
+
+<h3>
+🎬 Try Demo Videos
+</h3>
+
+
+<p>
+Test the system using sample original and deepfake videos.
+</p>
+
+
+
+
+<div class="demo-grid">
+
+
+
+<div class="demo-column">
+
+<h4>
+Original Videos
+</h4>
+
+
+<a href="/demo/original_1.mp4">
+Original Video 1
+</a>
+
+<a href="/demo/original_2.mp4">
+Original Video 2
+</a>
+
+<a href="/demo/original_3.mp4">
+Original Video 3
+</a>
+
+<a href="/demo/original_4.mp4">
+Original Video 4
+</a>
+
+<a href="/demo/original_5.mp4">
+Original Video 5
+</a>
+
+
+</div>
+
+
+
+
+
+
+<div class="demo-column">
+
+<h4>
+Deepfake Videos
+</h4>
+
+
+<a href="/demo/deepfake_1.mp4">
+Deepfake Video 1
+</a>
+
+
+<a href="/demo/deepfake_2.mp4">
+Deepfake Video 2
+</a>
+
+
+<a href="/demo/deepfake_3.mp4">
+Deepfake Video 3
+</a>
+
+
+<a href="/demo/deepfake_4.mp4">
+Deepfake Video 4
+</a>
+
+
+<a href="/demo/deepfake_5.mp4">
+Deepfake Video 5
+</a>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+</div>
 
 
 </body>
