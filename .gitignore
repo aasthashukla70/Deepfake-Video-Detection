@@ -8,21 +8,22 @@ __pycache__/
 # Dataset
 data/raw/
 data/processed/
+data/faces/
+data/test/
+data/temp_frames/
+data/temp_faces/
 
-# Ignore all models by default
+# Ignore models by default
 models/*
 
 # Keep deployment models
-!models/resnet18_final.pth
-!models/deploy.prototxt
-!models/res10_300x300_ssd_iter_140000.caffemodel
-
-# Keep final deployment models
 !models/
 !models/resnet18_final.pth
 !models/deploy.prototxt
 !models/res10_300x300_ssd_iter_140000.caffemodel
+
 # Uploaded videos
+static/uploads/
 uploads/*
 
 # Jupyter
@@ -33,11 +34,6 @@ uploads/*
 
 # VS Code
 .vscode/
-data/faces/
-static/uploads/
-data/temp_frames/
-data/temp_faces/
-data/test/
 
 # Backup files
 *_backup.*
