@@ -11,10 +11,21 @@ from src.model import DeepFakeCNN
 # Configuration
 # ==========================
 
-MODEL_PATH = "models/resnet18_finetuned.pth"
+import os
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "models",
+    "resnet18_final.pth"
+)
 
 NUM_FRAMES = 60
-
 
 device = torch.device(
     "cuda" if torch.cuda.is_available()
