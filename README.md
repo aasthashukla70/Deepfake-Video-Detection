@@ -34,27 +34,29 @@ The project demonstrates a complete ML pipeline:
 
 # 🏗️ System Architecture
 
+```
 Input Video
-|
-↓
+      |
+      ↓
 Frame Extraction
-|
-↓
+      |
+      ↓
 Face Detection
 (OpenCV DNN Detector)
-|
-↓
+      |
+      ↓
 Face Preprocessing
-|
-↓
+      |
+      ↓
 ResNet18 Deep Learning Model
-|
-↓
+      |
+      ↓
 Binary Classification
 (Original / Deepfake)
-|
-↓
+      |
+      ↓
 Confidence Score
+```
 
 ---
 
@@ -137,32 +139,34 @@ Frames were extracted from videos and processed into facial image samples for mo
 ---
 
 # 📁 Project Structure
-Deepfake-Video-Detection/
 
+```
+Deepfake-Video-Detection/
 │
 ├── data/
-│ ├── raw/
-│ ├── processed/
+│   ├── raw/
+│   └── processed/
 │
 ├── models/
-│ ├── resnet18_final.pth
-│ ├── deploy.prototxt
-│ └── res10_300x300_ssd_iter_140000.caffemodel
+│   ├── resnet18_final.pth
+│   ├── deploy.prototxt
+│   └── res10_300x300_ssd_iter_140000.caffemodel
 │
 ├── src/
-│ ├── frame_extractor.py
-│ ├── face_extractor.py
-│ ├── video_predict_final.py
+│   ├── frame_extractor.py
+│   ├── face_extractor.py
+│   └── video_predict_final.py
 │
 ├── pages/
-│ └── 1_Result.py
+│   └── 1_Result.py
 │
 ├── static/
-│ └── demo_videos/
+│   └── demo_videos/
 │
 ├── streamlit_app.py
 ├── requirements.txt
 └── README.md
+```
 
 
 ---
